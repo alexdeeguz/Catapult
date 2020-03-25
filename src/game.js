@@ -10,13 +10,27 @@ class Game {
         this.gravity = 0.5
         this.userObject = new Object()
         this.targets = []
-        this.level = 1
+        this.level = 10
         this.userDirX = 0
         this.userDirY = 0
         this.arrowX = this.userObject.posX + 10
         this.arrowY = this.userObject.posY + 10
 
         this.addTargets()
+    }
+
+    detectCollision() {
+        for (let i = 0; i < this.targets.length; i++) {
+            let target = this.targets[i]
+            if (this.userObject.posX > (target.posX - target.radius - 10) && this.userObject.posX < (target.posX + target.radius + 10)
+                && this.userObject.posY > (target.posY - target.radius - 10) && this.userObject.posY < (target.posY + target.radius + 10) && target.color === 'red') {
+                this.userObject.posX = target.posX
+                this.userObject.posY = target.posY
+                target.color = 'green'
+                return true
+            }
+        }
+        return false
     }
 
     addTargets() {
@@ -31,7 +45,7 @@ class Game {
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height)
 
         this.ctx.beginPath();
-        this.ctx.arc(this.userObject.posX,this.userObject.posY, 10, 0, 2 * Math.PI);
+        this.ctx.arc(this.userObject.posX,this.userObject.posY, this.userObject.radius, 0, 2 * Math.PI);
         this.ctx.fillStyle = 'lightgray';
         this.ctx.fill();
         this.ctx.stroke();
@@ -44,8 +58,8 @@ class Game {
 
         this.targets.forEach(target => {
             this.ctx.beginPath();
-            this.ctx.arc(target.posX, target.posY, 10, 0, 2 * Math.PI);
-            this.ctx.fillStyle = 'red';
+            this.ctx.arc(target.posX, target.posY, target.radius, 0, 2 * Math.PI);
+            this.ctx.fillStyle = target.color;
             this.ctx.fill();
             this.ctx.stroke();
         })
@@ -56,10 +70,15 @@ class Game {
     }
 
     updateObjectPos(vx, vy) {
-        setInterval(() => {
+        const updateObject = setInterval(() => {
+            if (this.detectCollision()) {
+                vx = 0
+                vy = 0
+                clearInterval(updateObject)
+            }
             this.userObject.posX += vx * .1
             this.userObject.posY += vy * .1
-            vy += 5
+            // vy += 5
             this.draw()
 
 
