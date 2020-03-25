@@ -11,6 +11,8 @@ class Game {
         this.userObject = new Object()
         this.targets = []
         this.level = 1
+        this.lives = 5
+        this.score = 0
         this.userDirX = 0
         this.userDirY = 0
         this.arrowX = this.userObject.posX + 10
@@ -36,8 +38,16 @@ class Game {
                 this.userObject.posX = target.posX
                 this.userObject.posY = target.posY
                 target.color = 'green'
+                this.score++
                 return true
             }
+        }
+        return false
+    }
+
+    missed() {
+        if (this.userObject.posX < 0 || this.userObject.posX > this.canvas.width || this.userObject.posY > this.canvas.height) {
+            return true
         }
         return false
     }
@@ -49,6 +59,7 @@ class Game {
     }
 
     draw() {
+
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.ctx.fillStyle = 'black';
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height)
@@ -65,6 +76,13 @@ class Game {
         this.ctx.strokeStyle = 'white';
         this.ctx.stroke();
 
+        this.ctx.font = "30px Arial";
+        this.ctx.fillStyle = 'white'
+        this.ctx.fillText(`LIVES: ${this.lives}`, 10, 50);
+        this.ctx.font = "30px Arial";
+        this.ctx.fillStyle = 'white'
+        this.ctx.fillText(`SCORE: ${this.score}`, 10, 90);
+
         this.targets.forEach(target => {
             this.ctx.beginPath();
             this.ctx.arc(target.posX, target.posY, target.radius, 0, 2 * Math.PI);
@@ -78,13 +96,13 @@ class Game {
         return [].concat(this.targets, this.userObject)
     }
 
-    updateObjectPos(vx, vy) {
-        const updateObject = setInterval(() => {
+    updateGame(vx, vy) {
+        const updateGame = setInterval(() => {
             // stop object if it hit a target
             if (this.detectCollision()) {
                 vx = 0
                 vy = 0
-                clearInterval(updateObject)
+                clearInterval(updateGame)
             }
             this.userObject.posX += vx * .1
             this.userObject.posY += vy * .1
@@ -98,7 +116,17 @@ class Game {
                 this.reset()
                 this.nextLevel()
                 this.addTargets()
-                clearInterval(updateObject)
+                clearInterval(updateGame)
+                this.draw()
+            }
+
+            if (this.missed()) {
+                this.lives--
+                vx = 0
+                vy = 0
+                this.userObject.posX = window.innerWidth / 2
+                this.userObject.posY = window.innerHeight / 2
+                clearInterval(updateGame)
             }
             
         }, 1000/40);
@@ -106,6 +134,8 @@ class Game {
 
     reset() {
         this.targets = []
+        this.userObject.posX = window.innerWidth / 2
+        this.userObject.posY = window.innerHeight / 2
     }
 
     nextLevel() {

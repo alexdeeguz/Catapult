@@ -11,7 +11,7 @@ class Target {
     randomPosition() {
         const maxWidth = window.innerWidth 
         const maxHeight = (window.innerHeight * .8)
-        this.posX = Math.floor(Math.random() * (maxWidth-50)) + 10
+        this.posX = Math.floor(Math.random() * (maxWidth-300)) + 200
         this.posY = Math.floor(Math.random() * (maxHeight-50)) + 10
     }
 }
