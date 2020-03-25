@@ -10,13 +10,22 @@ class Game {
         this.gravity = 0.5
         this.userObject = new Object()
         this.targets = []
-        this.level = 10
+        this.level = 1
         this.userDirX = 0
         this.userDirY = 0
         this.arrowX = this.userObject.posX + 10
         this.arrowY = this.userObject.posY + 10
 
         this.addTargets()
+    }
+
+    allTargetsHit() {
+        for (let i = 0; i < this.targets.length; i++) {
+            if (this.targets[i].color === 'red') {
+                return false
+            }
+        }
+        return true
     }
 
     detectCollision() {
@@ -71,6 +80,7 @@ class Game {
 
     updateObjectPos(vx, vy) {
         const updateObject = setInterval(() => {
+            // stop object if it hit a target
             if (this.detectCollision()) {
                 vx = 0
                 vy = 0
@@ -78,34 +88,34 @@ class Game {
             }
             this.userObject.posX += vx * .1
             this.userObject.posY += vy * .1
+            // gravity if object is moving
             if (vx !== 0) {
                 vy += 3
             }
             this.draw()
 
-
-            if (this.userObject.posY > this.canvas.height) {
-                if (vy < 0 && vy > -2) {
-                    vy = 0
-                }
-                this.userObject.posY = this.canvas.height - this.userObject.rad
-            }
-
-            if (Math.abs(vx) < 1) {
-                vx = 0;
+            if (this.allTargetsHit()) {
+                this.reset()
+                this.nextLevel()
+                this.addTargets()
+                clearInterval(updateObject)
             }
             
         }, 1000/40);
-        
+    }
+
+    reset() {
+        this.targets = []
+    }
+
+    nextLevel() {
+        this.level++
     }
 
     updateDirectionArrow(vx, vy) {
-        // if (vx < 50 &&  vx > -50 && vy < 50 && vy > -50) {
-        //     console.log(vx)
             this.arrowX = this.userObject.posX + vx
             this.arrowY = this.userObject.posY + vy
-        // }
-        this.draw()
+            this.draw()
     }
 }
 
