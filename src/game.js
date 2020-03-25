@@ -78,7 +78,9 @@ class Game {
             }
             this.userObject.posX += vx * .1
             this.userObject.posY += vy * .1
-            // vy += 5
+            if (vx !== 0) {
+                vy += 3
+            }
             this.draw()
 
 
