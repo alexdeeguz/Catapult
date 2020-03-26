@@ -11,13 +11,14 @@ class Game {
         this.userObject = new Object()
         this.targets = []
         this.level = 1
-        this.lives = 5
+        this.lives = 1
         this.score = 0
         this.userDirX = 0
         this.userDirY = 0
         this.arrowX = this.userObject.posX + 10
         this.arrowY = this.userObject.posY + 10
-
+        this.finalScore = 0
+        this.over = false
         this.addTargets()
     }
 
@@ -73,7 +74,7 @@ class Game {
         this.ctx.beginPath();
         this.ctx.moveTo(this.userObject.posX, this.userObject.posY);
         this.ctx.lineTo(this.arrowX, this.arrowY);
-        this.ctx.strokeStyle = 'white';
+        this.ctx.strokeStyle = 'red';
         this.ctx.stroke();
 
         this.ctx.font = "30px Arial";
@@ -96,40 +97,63 @@ class Game {
         return [].concat(this.targets, this.userObject)
     }
 
+    gameOver() {
+        if (this.lives === 0) {
+            this.over = true
+        }
+    }
+
     updateGame(vx, vy) {
-        const updateGame = setInterval(() => {
-            // stop object if it hit a target
-            if (this.detectCollision()) {
-                vx = 0
-                vy = 0
-                clearInterval(updateGame)
-            }
-            this.userObject.posX += vx * .1
-            this.userObject.posY += vy * .1
-            // gravity if object is moving
-            if (vx !== 0) {
-                vy += 3
-            }
+        this.userObject.velX = vx
+        this.userObject.velY = vy
+        if (this.over) {
+            var modal = document.getElementById("modal-container");
+            modal.classList.remove("hidden");
             this.draw()
-
-            if (this.allTargetsHit()) {
-                this.reset()
-                this.nextLevel()
-                this.addTargets()
-                clearInterval(updateGame)
+        } else {
+                const updateGame = setInterval(() => {
+            // stop object if it hit a target
+                if (this.detectCollision()) {
+                    this.userObject.velX = 0
+                    this.userObject.velY = 0
+                    clearInterval(updateGame)
+                }
+                this.userObject.posX += this.userObject.velX * .1
+                this.userObject.posY += this.userObject.velY * .1
+                // gravity if object is moving
+                if (this.userObject.velY !== 0) {
+                    this.userObject.velY += 3
+                }
                 this.draw()
-            }
 
-            if (this.missed()) {
-                this.lives--
-                vx = 0
-                vy = 0
-                this.userObject.posX = window.innerWidth / 2
-                this.userObject.posY = window.innerHeight / 2
-                clearInterval(updateGame)
-            }
-            
+                if (this.allTargetsHit()) {
+                    setTimeout(() => {
+                        this.reset()
+                        this.nextLevel()
+                        this.addTargets()
+                        clearInterval(updateGame)
+                        this.draw()
+                    }, 500);
+                }
+
+                if (this.missed()) {
+                    this.lives--
+                    this.userObject.velX = 0
+                    this.userObject.velY = 0
+                    this.userObject.posX = window.innerWidth / 2
+                    this.userObject.posY = window.innerHeight / 2
+                    clearInterval(updateGame)
+                    this.gameOver()
+                    this.draw()
+                }
+
+                if (this.over) {
+                    var modal = document.getElementById("modal-container");
+                    modal.classList.remove("hidden");
+                    this.draw()
+                } 
         }, 1000/40);
+    }
     }
 
     reset() {

@@ -6,10 +6,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script defer src="./main.js"></script>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <title>Document</title>
 </head>
 <body>
     <canvas id="game-canvas"></canvas>
+    
+    <div id="modal-container" class="show hidden">
+        <div id="modal">
+        </div>
+        <div id="modal-content">
+            <!-- <span id="close">&times;</span> -->
+            <h2>GAME OVER</h2>
+            <h5 id="retry">RETRY LEVEL</h5>
+            <h5 id="start-over">START OVER</h5>
+        </div>
+    </div>
 </body>
 </html>
