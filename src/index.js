@@ -1,7 +1,6 @@
 import Game from './game'
 import Object from './object'
 
-
 let g = new Game()
 g.draw()    
 
@@ -45,8 +44,8 @@ window.onload = () => {
             g.score = 0
             g.addTargets()
         })
-
-    
 }
+
+
 
 

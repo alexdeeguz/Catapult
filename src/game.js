@@ -22,6 +22,7 @@ class Game {
         this.addTargets()
     }
 
+
     allTargetsHit() {
         for (let i = 0; i < this.targets.length; i++) {
             if (this.targets[i].color === 'red') {
