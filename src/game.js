@@ -11,7 +11,7 @@ class Game {
         this.userObject = new Object()
         this.targets = []
         this.level = 1
-        this.lives = 1
+        this.lives = 3
         this.score = 0
         this.userDirX = 0
         this.userDirY = 0

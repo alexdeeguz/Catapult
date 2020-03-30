@@ -27,7 +27,7 @@ window.onload = () => {
             const modal = document.getElementById("modal-container");
             modal.classList.add("hidden");
             g.over = false
-            g.lives = 1
+            g.lives = 3
             g.targets.forEach(target => {
                 target.color = 'red'
             })
@@ -40,7 +40,7 @@ window.onload = () => {
             g.over = false
             g.targets = []
             g.level = 1
-            g.lives = 1
+            g.lives = 3
             g.score = 0
             g.addTargets()
         })
